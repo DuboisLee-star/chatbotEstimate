@@ -1,6 +1,6 @@
 export const Layout = ({ children }) => {
     return(
-        <div className="bg-neutral-100 h-full w-full">
+        <div className="flex flex-col bg-neutral-100">
             {children}
         </div>
     )
