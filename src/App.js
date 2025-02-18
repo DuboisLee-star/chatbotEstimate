@@ -1,21 +1,25 @@
-import { useState } from "react";
-import { Layout } from './components/layout'
-
-// import { Button } from "@/components/ui/button";
+import { Provider } from "react-redux";
+import store from "./store/store";
+// import Button  from "./components/ui/Button";
+// import { Send } from "lucide-react";
 import Login from "./components/Login";
 import MainBoard from "./components/MainBoard";
+import { useSelector } from "react-redux";
 
-const App = () => {
-  const [user, setUser] = useState(null);
+function AppContent() {
+  const user = useSelector((state) => state.chat.user.username);
 
   return (
-
-    <Layout>
-        {!user ? <Login setUser={setUser} /> : <MainBoard user={user} setUser={setUser} />}      
-        {/* <MainBoard user={user} setUser={setUser} /> */}
-    </Layout>
-
-  )
+    <div className="flex h-screen bg-gray-100">
+      {!user ? <Login /> : <MainBoard />}
+    </div>
+  );
 }
 
-export default App
+export default function ChatApp() {
+  return (
+    <Provider store={store}>
+      <AppContent />
+    </Provider>
+  );
+}
