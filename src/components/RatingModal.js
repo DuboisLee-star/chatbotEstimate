@@ -1,21 +1,54 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-// import { setUserRating, removeBotConversation } from '../store/chatSlice';
-import { setUserRating} from '../store/chatSlice';
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserRating, lineOffBot } from "../store/chatSlice";
 
 const RatingModal = ({ isOpen, onClose, botName }) => {
-  const [rating, setRating] = useState(0); // Rating between 0 and 10
+  const [rating, setRating] = useState(0);
   const dispatch = useDispatch();
+
+  // Get user and conversation data from Redux
+  const user = useSelector((state) => state.chat.user);
+  const conversation = useSelector((state) =>
+    botName ? state.chat.conversations[botName] || [] : []
+  );
 
   const handleStarClick = (index) => {
     setRating(index + 1);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (rating > 0) {
-      dispatch(setUserRating({ botName, rating }));
-      // dispatch(removeBotConversation()); // Remove only the selected bot's conversation
-      onClose(); // Close the modal
+      const record = {
+        time: new Date().toISOString(),
+        user,
+        botName,
+        conversation,
+        rating,
+      };
+
+      try {
+        // Send data to the backend for SQLite insertion
+        /* const response = await fetch("/api/saveRating", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(record),
+        }); */
+        let response = true;
+        // if (response.ok) {
+        if (response) {
+          dispatch(setUserRating({ botName, rating }));
+          console.log(botName, rating);
+          
+          dispatch(lineOffBot()); // Remove the bot and conversation
+          onClose(); // Close the modal
+        } else {
+          console.error("Failed to save data");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
     }
   };
 
@@ -30,7 +63,9 @@ const RatingModal = ({ isOpen, onClose, botName }) => {
           {[...Array(10)].map((_, index) => (
             <span
               key={index}
-              className={`cursor-pointer text-2xl ${index < rating ? 'text-yellow-500' : 'text-gray-400'}`}
+              className={`cursor-pointer text-2xl ${
+                index < rating ? "text-yellow-500" : "text-gray-400"
+              }`}
               onClick={() => handleStarClick(index)}
             >
               ★
@@ -39,14 +74,13 @@ const RatingModal = ({ isOpen, onClose, botName }) => {
         </div>
 
         <div className="flex justify-between items-center">
-          <button
-            className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg"
-            onClick={onClose}
-          >
+          <button className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg" onClick={onClose}>
             Cancel
           </button>
           <button
-            className={`py-2 px-4 rounded-lg ${rating > 0 ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-500'}`}
+            className={`py-2 px-4 rounded-lg ${
+              rating > 0 ? "bg-blue-500 text-white" : "bg-gray-300 text-gray-500"
+            }`}
             onClick={handleConfirm}
             disabled={rating === 0}
           >

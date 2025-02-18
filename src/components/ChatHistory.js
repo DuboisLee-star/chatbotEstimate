@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Button from "./ui/Button";
 import { Send } from "lucide-react";
 import RatingModal from "./RatingModal"; // Import the modal
+import { lineOffBot } from "../store/chatSlice"; // Import lineOffBot action
 
 export default function ChatHistory() {
   const dispatch = useDispatch();
@@ -15,6 +16,9 @@ export default function ChatHistory() {
   const endOfMessagesRef = useRef(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
+
+  // Disable the "LineOff and Estimate" button if bot is lineOff
+  const isLineOff = useSelector((state) => !state.chat.selectedBot);
 
   const handleSend = () => {
     if (selectedBot && message.trim()) {
@@ -54,7 +58,7 @@ export default function ChatHistory() {
         <Button
           onClick={handleButtonClick}
           className="bg-gray-200"
-          disabled={isButtonDisabled}
+          disabled={isButtonDisabled || isLineOff} // Disable if bot is lineOff
         >
           LineOff And Estimate
         </Button>
