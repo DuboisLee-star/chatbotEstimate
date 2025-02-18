@@ -1,10 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { act } from "react";
 
 const chatSlice = createSlice({
   name: "chat",
   initialState: {
     user: {
       username: "",
+      avatar: "",
       loginTime: null,
     },
     selectedBot: null,
@@ -13,7 +15,9 @@ const chatSlice = createSlice({
   },
   reducers: {
     setUser: (state, action) => {
+      // console.log(action.payload);
       state.user.username = action.payload.username;
+      state.user.avatar = action.payload.avatar;
       state.user.loginTime = action.payload.loginTime;
     },
     setSelectedBot: (state, action) => {

@@ -1,14 +1,21 @@
 // components/Login.js
 import { useState } from "react";
+import { useDispatch } from "react-redux";  // Import useDispatch
+import { setUser } from "../store/chatSlice"; // Import setUser action
 import Button from "./ui/Button";
 
-export default function Login({ setUser }) {
+export default function Login() {
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState("");
-  const avatars = ["🧑", "👩",  "👮", "🎅","👨", "🧔", "👱"];
+  const avatars = ["🧑", "👩", "👮", "🎅", "👨", "🧔", "👱"];
+
+  const dispatch = useDispatch(); // Initialize useDispatch
 
   const handleLogin = () => {
-    if (name && avatar) setUser({ name, avatar });
+    if (name && avatar) {
+      const loginTime = new Date().toISOString(); // Get current time
+      dispatch(setUser({ username: name, avatar, loginTime })); // Dispatch setUser action
+    }
   };
 
   return (
