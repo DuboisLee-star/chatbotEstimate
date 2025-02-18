@@ -1,55 +1,50 @@
-// components/ChatHistory.js
 import { useSelector, useDispatch } from "react-redux";
 import { addMessage } from "../store/chatSlice";
 import { useState, useRef, useEffect } from "react";
 import Button from "./ui/Button";
 import { Send } from "lucide-react";
+import RatingModal from "./RatingModal"; // Import the modal
 
 export default function ChatHistory() {
   const dispatch = useDispatch();
   const selectedBot = useSelector((state) => state.chat.selectedBot);
   const conversations = useSelector(
-    (state) => (selectedBot ? state.chat.conversations[selectedBot] || [] : []) // Handle null selectedBot
+    (state) => (selectedBot ? state.chat.conversations[selectedBot] || [] : [])
   );
   const [message, setMessage] = useState("");
-  const endOfMessagesRef = useRef(null); // Reference to scroll to the last message
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true); // Track button state
+  const endOfMessagesRef = useRef(null);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
 
   const handleSend = () => {
     if (selectedBot && message.trim()) {
-      // Dispatch user message
       dispatch(addMessage({ botName: selectedBot, message }));
       setMessage("");
 
-      // Simulate bot response (e.g., "Hello")
       setTimeout(() => {
         dispatch(addMessage({ botName: selectedBot, message: "Hello" }));
-      }, 500); // Simulate delay for bot response
+      }, 500);
     }
   };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault(); // Prevent default behavior (new line on enter)
-      handleSend(); // Send message on enter key
+      e.preventDefault();
+      handleSend();
     }
   };
 
-  // Scroll to the last message whenever the conversation updates
   useEffect(() => {
-    // Scroll to the latest message
     endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
 
-    // Enable button when there is at least one message
     if (conversations.length > 0) {
-      setIsButtonDisabled(false); // Enable the button
+      setIsButtonDisabled(false);
     }
   }, [conversations]);
 
-  // Action when button is clicked
+  // Open the modal when button is clicked
   const handleButtonClick = () => {
-    // Define the action to be triggered when the button is clicked
-    alert("LineOff and Estimate action triggered!"); // Example action
+    setIsModalOpen(true);
   };
 
   return (
@@ -59,7 +54,7 @@ export default function ChatHistory() {
         <Button
           onClick={handleButtonClick}
           className="bg-gray-200"
-          disabled={isButtonDisabled} // Disable button based on isButtonDisabled state
+          disabled={isButtonDisabled}
         >
           LineOff And Estimate
         </Button>
@@ -71,7 +66,6 @@ export default function ChatHistory() {
               key={index}
               className={`flex ${msg.startsWith("Hello") ? "justify-start" : "justify-end"} space-x-2`}
             >
-              {/* Message bubbles */}
               <div
                 className={`max-w-xs p-3 rounded-lg ${msg.startsWith("Hello") ? "bg-gray-200" : "bg-blue-500 text-white"}`}
               >
@@ -80,11 +74,8 @@ export default function ChatHistory() {
             </div>
           ))
         ) : (
-          <p className="text-gray-400">
-            Select a chatbot to start conversation.
-          </p>
+          <p className="text-gray-400">Select a chatbot to start conversation.</p>
         )}
-        {/* Ref to scroll to the last message */}
         <div ref={endOfMessagesRef} />
       </div>
       <div className="border-t p-2 flex items-center">
@@ -93,7 +84,7 @@ export default function ChatHistory() {
           placeholder="Type a message..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={handleKeyDown} // Listen for Enter key press
+          onKeyDown={handleKeyDown}
           className="flex-1 p-2 border rounded-l-lg h-10"
         />
         <Button
@@ -103,6 +94,9 @@ export default function ChatHistory() {
           <Send size={18} />
         </Button>
       </div>
+
+      {/* Rating Modal */}
+      <RatingModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} botName={selectedBot} />
     </div>
   );
 }

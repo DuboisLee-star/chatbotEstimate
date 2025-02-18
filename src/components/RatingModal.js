@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setUserRating, removeBotConversation } from '../store/chatSlice';
+// import { setUserRating, removeBotConversation } from '../store/chatSlice';
+import { setUserRating} from '../store/chatSlice';
 
 const RatingModal = ({ isOpen, onClose, botName }) => {
   const [rating, setRating] = useState(0); // Rating between 0 and 10
@@ -13,7 +14,7 @@ const RatingModal = ({ isOpen, onClose, botName }) => {
   const handleConfirm = () => {
     if (rating > 0) {
       dispatch(setUserRating({ botName, rating }));
-      dispatch(removeBotConversation()); // Remove only the selected bot's conversation
+      // dispatch(removeBotConversation()); // Remove only the selected bot's conversation
       onClose(); // Close the modal
     }
   };
