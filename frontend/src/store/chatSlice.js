@@ -45,7 +45,7 @@ const chatSlice = createSlice({
         delete state.conversations[state.selectedBot]; // Remove conversation
         state.chatbotList = state.chatbotList.filter(bot => bot !== state.selectedBot); // Remove bot from list
         state.selectedBot = null; // Remove selected bot
-        console.log('here delete bot from list', state.chatbotList);
+        // console.log('here delete bot from list', state.chatbotList);
       }
     },
   },

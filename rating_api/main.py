@@ -2,15 +2,26 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from models import create_db, get_ratings, save_rating, get_rating_by_id, update_rating, delete_rating, get_filtered_ratings
 
+from fastapi.middleware.cors import CORSMiddleware
+
+
+
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins (for development)
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 # Create database if not exists
 create_db()
 
 class RatingRequest(BaseModel):
     bot_name: str
     user: str
-    conversation: list
+    conversation: str
     rating: int
 
 class RatingUpdateRequest(BaseModel):
@@ -19,6 +30,7 @@ class RatingUpdateRequest(BaseModel):
 
 @app.post("/saveRating/")
 async def save_rating_record(rating: RatingRequest):
+    print(rating)
     result = save_rating(rating)
     if result:
         return {"message": "Rating saved successfully"}

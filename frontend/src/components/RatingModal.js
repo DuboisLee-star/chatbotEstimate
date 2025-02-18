@@ -19,27 +19,25 @@ const RatingModal = ({ isOpen, onClose, botName }) => {
   const handleConfirm = async () => {
     if (rating > 0) {
       const record = {
-        time: new Date().toISOString(),
-        user,
-        botName,
-        conversation,
+        bot_name: botName,
+        user: user.username, // Extract only the username
+        conversation: conversation.join(" | "), // Convert array to a single string
         rating,
       };
-
+      // console.log(record);
       try {
-        // Send data to the backend for SQLite insertion
-        /* const response = await fetch("/api/saveRating", {
+        // console.log("Payload being sent:", JSON.stringify(record));
+        const response = await fetch("http://127.0.0.1:8000/saveRating/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(record),
-        }); */
-        let response = true;
-        // if (response.ok) {
-        if (response) {
+        });
+  
+        if (response.ok) {
           dispatch(setUserRating({ botName, rating }));
-          console.log(botName, rating);
+          // console.log(botName, rating);
           
           dispatch(lineOffBot()); // Remove the bot and conversation
           onClose(); // Close the modal
@@ -51,6 +49,8 @@ const RatingModal = ({ isOpen, onClose, botName }) => {
       }
     }
   };
+  
+  
 
   if (!isOpen) return null;
 
