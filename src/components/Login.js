@@ -1,11 +1,11 @@
 // components/Login.js
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import Button from "./ui/Button";
 
 export default function Login({ setUser }) {
   const [name, setName] = useState("");
-  const [avatar, setAvatar] = useState(null);
-  const avatars = ["🧑", "👩", "👨", "🧔", "👱", "🧕", "🧓", "👶", "👮", "🎅"];
+  const [avatar, setAvatar] = useState("");
+  const avatars = ["🧑", "👩",  "👮", "🎅","👨", "🧔", "👱"];
 
   const handleLogin = () => {
     if (name && avatar) setUser({ name, avatar });
