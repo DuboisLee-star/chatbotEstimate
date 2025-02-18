@@ -13,6 +13,7 @@ export default function ChatHistory() {
   );
   const [message, setMessage] = useState("");
   const endOfMessagesRef = useRef(null); // Reference to scroll to the last message
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true); // Track button state
 
   const handleSend = () => {
     if (selectedBot && message.trim()) {
@@ -36,14 +37,32 @@ export default function ChatHistory() {
 
   // Scroll to the last message whenever the conversation updates
   useEffect(() => {
+    // Scroll to the latest message
     endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
+
+    // Enable button when there is at least one message
+    if (conversations.length > 0) {
+      setIsButtonDisabled(false); // Enable the button
+    }
   }, [conversations]);
+
+  // Action when button is clicked
+  const handleButtonClick = () => {
+    // Define the action to be triggered when the button is clicked
+    alert("LineOff and Estimate action triggered!"); // Example action
+  };
 
   return (
     <div className="flex flex-col flex-1 bg-white shadow-md rounded-lg overflow-hidden">
       <div className="flex justify-between items-center p-4 border-b">
         <h3 className="font-semibold">Chat History</h3>
-        <Button className="bg-gray-200">LineOff And Estimate</Button>
+        <Button
+          onClick={handleButtonClick}
+          className="bg-gray-200"
+          disabled={isButtonDisabled} // Disable button based on isButtonDisabled state
+        >
+          LineOff And Estimate
+        </Button>
       </div>
       <div className="flex-1 overflow-y-auto p-4 space-y-2 slim-scrollbar">
         {selectedBot ? (
